@@ -56,7 +56,7 @@ class _MyAppState extends State<MyApp> {
                   refreshController: refreshController,
                   onRefresh: () {
                     log('io xo xo xo xo ');
-                    refreshController.refreshCompleted();
+                    refreshController.loadComplete();
                   },
                   elements: _elements,
                   order: GroupedListOrder.DESC,
