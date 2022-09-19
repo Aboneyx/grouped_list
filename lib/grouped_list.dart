@@ -199,7 +199,10 @@ class GroupedListView<T, E> extends StatefulWidget {
   /// of [groupSeparatorBuilder] or [groupHeaderBuilder] must be provieded.
   ///
   final RefreshController refreshController;
+  final bool enablePullDown;
+  final bool enablePullUp;
   final void Function()? onRefresh;
+  final void Function()? onLoading;
   const GroupedListView({
     Key? key,
     required this.elements,
@@ -235,7 +238,10 @@ class GroupedListView<T, E> extends StatefulWidget {
     this.semanticChildCount,
     this.itemExtent,
     required this.refreshController,
+    this.enablePullDown = true,
+    this.enablePullUp = false,
     this.onRefresh,
+    this.onLoading,
   })  : assert(itemBuilder != null || indexedItemBuilder != null),
         assert(groupSeparatorBuilder != null || groupHeaderBuilder != null),
         super(key: key);
@@ -348,10 +354,10 @@ class _GroupedListViewState<T, E> extends State<GroupedListView<T, E>> {
             noMoreIcon: null,
             failedIcon: null,
           ),
-          onRefresh: null,
-          enablePullDown: false,
-          enablePullUp: true,
-          onLoading: widget.onRefresh,
+          onRefresh: widget.onRefresh,
+          onLoading: widget.onLoading,
+          enablePullDown: widget.enablePullDown,
+          enablePullUp: widget.enablePullUp,
           scrollController: _controller,
           child: ListView.builder(
             key: widget.key,

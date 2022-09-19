@@ -54,8 +54,13 @@ class _MyAppState extends State<MyApp> {
                 height: MediaQuery.of(context).size.height * 0.8,
                 child: GroupedListView<Element, DateTime>(
                   refreshController: refreshController,
+                  enablePullUp: true,
                   onRefresh: () {
                     log('io xo xo xo xo ');
+                    refreshController.refreshCompleted();
+                  },
+                  onLoading: () {
+                    log('onLoading');
                     refreshController.loadComplete();
                   },
                   elements: _elements,
