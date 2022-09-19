@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 void main() => runApp(const MyApp());
 
@@ -14,8 +15,15 @@ class Element {
 List<Element> _elements = [];
 int counter = 1;
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  RefreshController refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +58,7 @@ class MyApp extends StatelessWidget {
 
   GroupedListView<dynamic, int> _createList(List<Element> elements) {
     return GroupedListView<Element, int>(
+      refreshController: refreshController,
       elements: elements,
       groupBy: (element) => element.index,
       groupComparator: (value1, value2) => value2.compareTo(value1),
@@ -78,8 +87,7 @@ class MyApp extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
       child: SizedBox(
         child: ListTile(
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
           leading: const Icon(Icons.account_circle),
           title: Text(name),
           trailing: const Icon(Icons.arrow_forward),

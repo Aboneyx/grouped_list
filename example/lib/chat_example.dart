@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 import 'package:intl/intl.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 void main() => runApp(const MyApp());
 
@@ -8,27 +11,29 @@ List<Element> _elements = [
   Element(DateTime(2020, 6, 24, 9, 25), 'Hello how are you?'),
   Element(DateTime(2020, 6, 24, 9, 36), 'Fine and what about you?', true),
   Element(DateTime(2020, 6, 24, 9, 39), 'I am fine too'),
-  Element(DateTime(2020, 6, 25, 14, 12),
-      'Hey you do you wanna go to the cinema?', true),
-  Element(
-      DateTime(2020, 6, 25, 14, 19), 'Yes of course when do we want to meet'),
+  Element(DateTime(2020, 6, 25, 14, 12), 'Hey you do you wanna go to the cinema?', true),
+  Element(DateTime(2020, 6, 25, 14, 19), 'Yes of course when do we want to meet'),
   Element(DateTime(2020, 6, 25, 14, 20), 'Lets meet at 8 o clock', true),
   Element(DateTime(2020, 6, 25, 14, 25), 'Okay see you then :)'),
-  Element(DateTime(2020, 6, 27, 18, 41),
-      'Hey whats up? Can you help me real quick?'),
+  Element(DateTime(2020, 6, 27, 18, 41), 'Hey whats up? Can you help me real quick?'),
   Element(DateTime(2020, 6, 27, 18, 45), 'Of course  what do you need?', true),
-  Element(DateTime(2020, 6, 28, 8, 47),
-      'Can you send me the homework for tomorrow please?'),
+  Element(DateTime(2020, 6, 28, 8, 47), 'Can you send me the homework for tomorrow please?'),
   Element(
     DateTime(2020, 6, 28, 8, 48),
     'I dont understand the math questions :(',
   ),
-  Element(DateTime(2020, 6, 28, 8, 56), 'Yeah sure I have send them per mail',
-      true),
+  Element(DateTime(2020, 6, 28, 8, 56), 'Yeah sure I have send them per mail', true),
 ];
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  RefreshController refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -48,9 +53,14 @@ class MyApp extends StatelessWidget {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.8,
                 child: GroupedListView<Element, DateTime>(
+                  refreshController: refreshController,
+                  onRefresh: () {
+                    log('io xo xo xo xo ');
+                    refreshController.refreshCompleted();
+                  },
                   elements: _elements,
                   order: GroupedListOrder.DESC,
-                  reverse: true,
+                  // reverse: true,
                   floatingHeader: true,
                   useStickyGroupSeparators: true,
                   groupBy: (Element element) => DateTime(
@@ -59,8 +69,7 @@ class MyApp extends StatelessWidget {
                     element.date.day,
                   ),
                   groupHeaderBuilder: _createGroupHeader,
-                  itemBuilder: (_, Element element) =>
-                      _createItem(context, element),
+                  itemBuilder: (_, Element element) => _createItem(context, element),
                 ),
               ),
             ],
@@ -104,15 +113,10 @@ class MyApp extends StatelessWidget {
           elevation: 8.0,
           margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
           child: ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-            leading: element.sender
-                ? Text(DateFormat.Hm().format(element.date))
-                : const Icon(Icons.person),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+            leading: element.sender ? Text(DateFormat.Hm().format(element.date)) : const Icon(Icons.person),
             title: Text(element.name),
-            trailing: element.sender
-                ? const Icon(Icons.person_outline)
-                : Text(DateFormat.Hm().format(element.date)),
+            trailing: element.sender ? const Icon(Icons.person_outline) : Text(DateFormat.Hm().format(element.date)),
           ),
         ),
       ),

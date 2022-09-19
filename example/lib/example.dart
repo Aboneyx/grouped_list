@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 void main() => runApp(const MyApp());
 
@@ -12,8 +13,15 @@ List _elements = [
   {'name': 'Danny', 'group': 'Team C'},
 ];
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  RefreshController refreshController = RefreshController();
 
   @override
   Widget build(BuildContext context) {
@@ -34,11 +42,13 @@ class MyApp extends StatelessWidget {
 
   _createGroupedListView() {
     return GroupedListView<dynamic, String>(
+      refreshController: refreshController,
       elements: _elements,
       groupBy: (element) => element['group'],
       groupComparator: (value1, value2) => value2.compareTo(value1),
       itemComparator: (item1, item2) => item1['name'].compareTo(item2['name']),
-      order: GroupedListOrder.DESC,
+      // order: GroupedListOrder.DESC,
+      reverse: true,
       useStickyGroupSeparators: true,
       groupSeparatorBuilder: (String value) => Padding(
         padding: const EdgeInsets.all(8.0),
@@ -54,8 +64,7 @@ class MyApp extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 6.0),
           child: SizedBox(
             child: ListTile(
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
               leading: const Icon(Icons.account_circle),
               title: Text(element['name']),
               trailing: const Icon(Icons.arrow_forward),
